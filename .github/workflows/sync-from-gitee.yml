@@ -8,12 +8,17 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # 必须保留，给 Actions 推送权限
+      contents: write
     steps:
-      - name: 同步 Gitee 到 GitHub
+      - name: 配置 Git 认证
         run: |
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
+          # 关键：让 Git 自动使用 Actions 令牌认证 GitHub
+          git config --global url."https://${{ secrets.GITHUB_TOKEN }}@github.com/".insteadOf "https://github.com/"
+
+      - name: 同步 Gitee 到 GitHub
+        run: |
           git clone --bare https://gitee.com/tengxiaobao/tvbox-source-aggregator.git upstream
           cd upstream
-          git push --mirror https://${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git
+          git push --mirror https://github.com/${{ github.repository }}.git
