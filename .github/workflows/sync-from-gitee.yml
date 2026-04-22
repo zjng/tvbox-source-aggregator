@@ -1,6 +1,6 @@
 name: Sync from Gitee
 on:
-  workflow_dispatch:  # 允许手动点按钮同步
+  workflow_dispatch:  # 允许手动触发
   schedule:
     - cron: '0 * * * *'  # 每小时自动同步一次
 
@@ -8,8 +8,8 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - name: Sync Gitee to GitHub
-        uses: wearerequired/git-mirror-action@v1
-        with:
-          source-repo: https://gitee.com/tengxiaobao/tvbox-source-aggregator.git
-          destination-repo: https://github.com/${{ github.repository }}.git
+      - name: 拉取上游仓库并推送到 GitHub
+        run: |
+          git clone --bare https://gitee.com/tengxiaobao/tvbox-source-aggregator.git upstream
+          cd upstream
+          git push --mirror https://github.com/${{ github.repository }}.git
