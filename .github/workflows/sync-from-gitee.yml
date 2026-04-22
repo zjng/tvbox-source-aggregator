@@ -1,14 +1,16 @@
 name: Sync from Gitee
 on:
-  workflow_dispatch:  # 允许手动触发
+  workflow_dispatch:
   schedule:
-    - cron: '0 * * * *'  # 每小时自动同步一次
+    - cron: '0 * * * *'
 
 jobs:
   sync:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # 关键：给推送代码的权限
     steps:
-      - name: 拉取上游仓库并推送到 GitHub
+      - name: Sync from Gitee to GitHub
         run: |
           git clone --bare https://gitee.com/tengxiaobao/tvbox-source-aggregator.git upstream
           cd upstream
